@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+import type { Artwork } from '../data/series';
+interface Props extends Artwork { eager?: boolean; }
+const { image, imageDescription, eager = false } = Astro.props;
+---
+<Image
+  src={image}
+  alt={imageDescription}
+  widths={[480, 800, 1200, 1800, 2400]}
+  sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1200px"
+  width={1200}
+  height={480}
+  format="webp"
+  quality={90}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : 'auto'}
+/>
+<style>
+  img { display: block; width: 100%; height: auto; aspect-ratio: 5 / 2; object-fit: contain; background: #252621; }
+</style>

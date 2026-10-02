@@ -1,23 +1,39 @@
+---
+import { collection } from '../data/collection';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; }
+const {
+  title = 'Cinestripes — Cinema, in colour.',
+  description = 'Every frame, a stripe. Explore films and TV series distilled into colour.',
+} = Astro.props;
+---
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f6f2" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header wrap" id="top">
+      <a class="wordmark" href="/" aria-label="Cinestripes home">
+        <span class="stripe-mark" aria-hidden="true"></span>
+        cinestripes<span class="wordmark-dot">.</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="/#collection">Collection <span class="nav-count">{String(collection.length).padStart(2, '0')}</span></a>
+        <a href="/#about">About</a>
+      </nav>
+    </header>
+    <slot />
+    <footer class="site-footer wrap">
+      <span>Cinestripes <span class="footer-divider">/</span> A collection in colour</span>
+      <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
+    </footer>
+  </body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

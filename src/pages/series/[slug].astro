@@ -1,0 +1,64 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import StripeImage from '../../components/StripeImage.astro';
+import { series, getOrderedEpisodes } from '../../data/series';
+
+export const getStaticPaths = (() => series.map((show) => ({
+  params: { slug: show.slug },
+  props: { show },
+}))) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { show } = Astro.props;
+const episodes = getOrderedEpisodes(show);
+const seasons = [...new Set(episodes.map((episode) => episode.season))];
+const episodeCode = (season: number, number: number) => `S${String(season).padStart(2, '0')} E${String(number).padStart(2, '0')}`;
+---
+<DetailLayout title={show.title} year={show.year} kind="TV series" credits={show.creators} description={`Explore ${show.title} episode by episode, with ${episodes.length} colour timelines in the Cinestripes collection.`}>
+  <p class="series-note">A story in colour, episode by episode. <span>{episodes.length} episode{episodes.length === 1 ? '' : 's'} in the collection.</span></p>
+  {seasons.map((season) => (
+    <section class="season" aria-labelledby={`season-${season}`}>
+      <div class="season-header">
+        <h2 id={`season-${season}`}>Season {String(season).padStart(2, '0')}</h2>
+        <span>{episodes.filter((episode) => episode.season === season).length} in collection</span>
+      </div>
+      <ol class="episode-list">
+        {episodes.filter((episode) => episode.season === season).map((episode) => (
+          <li>
+            <article aria-labelledby={`episode-${episode.season}-${episode.number}`}>
+              <a class="artwork" href={episode.image.src} target="_blank" rel="noopener noreferrer" aria-label={`Open ${show.title}, ${episodeCode(episode.season, episode.number)}, full-resolution image (opens in a new tab)`}>
+                <StripeImage image={episode.image} imageDescription={episode.imageDescription} eager={episode === episodes[0]} />
+              </a>
+              <div class="episode-caption">
+                <div><p class="episode-code">{episodeCode(episode.season, episode.number)}</p><h3 id={`episode-${episode.season}-${episode.number}`}>{episode.title}</h3></div>
+                <a href={episode.image.src} target="_blank" rel="noopener noreferrer" aria-label={`View ${show.title}, ${episodeCode(episode.season, episode.number)}, full-resolution image (opens in a new tab)`}>View full image <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</DetailLayout>
+<style>
+  .series-note { margin: 0 0 36px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+  .series-note span { display: inline-block; }
+  .season + .season { margin-top: 55px; }
+  .season-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); padding: 23px 0; }
+  h2 { margin: 0; font: 11px var(--mono); text-transform: uppercase; letter-spacing: 1.3px; }
+  .season-header > span { color: var(--muted); font: 11px var(--mono); }
+  .episode-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 48px; }
+  .artwork { display: block; }
+  .episode-caption { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-top: 22px; }
+  .episode-code { margin: 0 0 8px; color: var(--muted); font: 10px var(--mono); letter-spacing: 1px; }
+  h3 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -.6px; }
+  .episode-caption a { flex-shrink: 0; font-size: 12px; text-decoration: none; padding-block: 8px; }
+  .episode-caption a span { margin-left: 12px; }
+  @media (max-width: 600px) {
+    .series-note { font-size: 12px; margin-bottom: 25px; }
+    .episode-list { gap: 32px; }
+    .episode-caption { flex-wrap: wrap; gap: 12px; padding-top: 18px; }
+    h3 { font-size: 21px; }
+  }
+</style>

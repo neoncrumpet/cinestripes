@@ -1,11 +1,72 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import CollectionCard from '../components/CollectionCard.astro';
+import { collection } from '../data/collection';
 ---
 
 <Layout>
-	<Welcome />
+  <main id="main" class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> A different way to see a story</p>
+      <div class="intro-row">
+        <h1 id="page-title">Cinema, in colour.</h1>
+        <p class="intro-description">Every frame, a stripe. Every story, a palette.<br />Films and television, distilled into colour.</p>
+      </div>
+    </section>
+
+    <section id="collection" aria-labelledby="collection-title">
+      <div class="collection-header">
+        <h2 id="collection-title" class="eyebrow">The collection <span class="collection-count">({String(collection.length).padStart(2, '0')})</span></h2>
+        <span class="collection-note">Films & television, frame by frame.</span>
+      </div>
+      <ol class="movie-list">
+        {collection.map((entry, index) => (
+          <li><CollectionCard entry={entry} index={index} /></li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="about" id="about" aria-labelledby="about-title">
+      <p class="eyebrow">Behind the stripes</p>
+      <div>
+        <h2 id="about-title">The story in between the colours.</h2>
+        <p>Cinestripes turns the frames of a film or episode into a single image. Read from left to right, each stripe becomes part of a visual timeline, revealing the shifts in light, mood, and colour that give each story its character.</p>
+      </div>
+    </section>
+  </main>
+
 </Layout>
+
+<style>
+  .intro { padding: 77px 0 70px; }
+  .eyebrow { margin: 0; font: 11px var(--mono); font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; }
+  .intro > .eyebrow { display: flex; align-items: center; gap: 9px; color: var(--accent); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .intro-row { display: flex; justify-content: space-between; align-items: end; gap: 36px; margin-top: 23px; }
+  h1 { margin: 0; font-size: clamp(42px, 5.6vw, 76px); font-weight: 500; letter-spacing: -4px; line-height: 1.05; }
+  .intro-description { max-width: 315px; margin: 0 0 3px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+  #collection, #about { scroll-margin-top: 32px; }
+  .collection-header { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding: 22px 0; }
+  .collection-count { color: var(--muted); margin-left: 7px; }
+  .collection-note { color: var(--muted); font: 11px var(--mono); }
+  .movie-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 52px; }
+  .about { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 88px; padding: 46px 0 66px; border-top: 1px solid var(--line); }
+  .about > .eyebrow { padding-top: 6px; color: var(--muted); }
+  .about h2 { margin: 0 0 17px; font-size: 27px; font-weight: 500; letter-spacing: -.7px; }
+  .about p:not(.eyebrow) { max-width: 590px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.9; }
+  @media (max-width: 1000px) {
+    .intro-row { flex-direction: column; align-items: start; gap: 22px; }
+    .intro-description { max-width: none; }
+  }
+  @media (max-width: 600px) {
+    .intro { padding: 49px 0 41px; }
+    h1 { letter-spacing: -2.3px; font-size: clamp(35px, 8.8vw, 53px); }
+    .intro-description { font-size: 12px; }
+    .eyebrow { font-size: 10px; letter-spacing: 1.1px; }
+    .collection-note { display: none; }
+    .collection-header { padding: 19px 0; }
+    .movie-list { gap: 36px; }
+    .about { grid-template-columns: 1fr; gap: 23px; margin-top: 52px; padding: 30px 0 39px; }
+    .about h2 { font-size: 24px; }
+  }
+</style>

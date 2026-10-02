@@ -1,46 +1,26 @@
-# Astro Starter Kit: Basics
+# Cinestripes
 
-```sh
-npm create astro@latest -- --template basics
-```
+An Astro gallery of films and television episodes distilled into colour timelines.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Development
 
-## 🚀 Project Structure
+- `npm install` installs dependencies.
+- `npm run dev -- --background` starts the background server.
+- `npm run astro -- dev status` checks the server; use `dev logs` or `dev stop` to manage it.
+- `npm run build` generates the static site in `dist/`.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Adding films
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+Add a 5:2 image to `src/assets/`, import it in `src/data/movies.ts`, and add a film with a unique slug, title, release year, directors, image, and image description. The collection card and `/movies/<slug>/` page are generated automatically.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Adding TV series
 
-## 🧞 Commands
+Add episode images to `src/assets/tv/<series>/` and an entry to `src/data/series.ts`. Each series has a unique slug, title, release year, creators, and at least one episode. Episodes include a season number, episode number, title, image, and image description. Use unique season/episode pairs within each series.
 
-All commands are run from the root of the project, from a terminal:
+The front page shows one card per series and links to `/series/<slug>/`, where episodes are sorted by season and episode number. Counts describe images in this collection, not the total number of episodes aired.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### Choosing a series cover
 
-## 👀 Want to learn more?
+Set `cover` in the series data to an episode object (for example, `cover: widowsBayEpisodes[0]`), or provide a separate `{ image, imageDescription }` object. If `cover` is omitted, the earliest episode in season/episode order supplies the front-page image.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+The shared collection is assembled in `src/data/collection.ts`. Artwork links on detail pages open the original image; collection cards open the film or series page.

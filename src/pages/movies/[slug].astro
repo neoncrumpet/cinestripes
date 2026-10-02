@@ -1,0 +1,38 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import StripeImage from '../../components/StripeImage.astro';
+import { movies } from '../../data/movies';
+
+export const getStaticPaths = (() => movies.map((movie) => ({
+  params: { slug: movie.slug },
+  props: { movie },
+}))) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { movie } = Astro.props;
+---
+<DetailLayout title={movie.title} year={movie.year} kind="Film" credits={movie.directors} description={`Explore ${movie.title} (${movie.year}), directed by ${movie.directors.join(' and ')}, as a single colour timeline.`}>
+  <figure>
+    <a class="artwork" href={movie.image.src} target="_blank" rel="noopener noreferrer" aria-label={`Open ${movie.title} full-resolution image (opens in a new tab)`}>
+      <StripeImage image={movie.image} imageDescription={movie.imageDescription} eager />
+    </a>
+    <figcaption>
+      <div><h2>A whole film. A single image.</h2><p>Every frame, from beginning to end.</p></div>
+      <a href={movie.image.src} target="_blank" rel="noopener noreferrer" aria-label={`View ${movie.title} full-resolution image (opens in a new tab)`}>View full image <span aria-hidden="true">↗</span></a>
+    </figcaption>
+  </figure>
+</DetailLayout>
+<style>
+  figure { margin: 0; }
+  .artwork { display: block; }
+  figcaption { display: flex; justify-content: space-between; align-items: start; gap: 24px; padding-top: 24px; }
+  h2 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: -.4px; }
+  p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+  figcaption a { flex-shrink: 0; padding-block: 4px; font-size: 12px; text-decoration: none; }
+  figcaption a span { margin-left: 12px; }
+  @media (max-width: 600px) {
+    figcaption { flex-wrap: wrap; padding-top: 20px; gap: 18px; }
+    h2 { font-size: 16px; }
+  }
+</style>
