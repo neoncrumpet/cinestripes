@@ -1,5 +1,6 @@
 ---
 import Layout from './Layout.astro';
+import { withBase } from '../utils/paths';
 interface Props {
   title: string;
   year: number;
@@ -11,7 +12,7 @@ const { title, year, kind, credits, description } = Astro.props;
 ---
 <Layout title={`${title} (${year}) — Cinestripes`} description={description}>
   <main id="main" class="wrap detail-page">
-    <a class="back-link" href="/#collection"><span aria-hidden="true">←</span> Back to collection</a>
+    <a class="back-link" href={withBase('#collection')}><span aria-hidden="true">←</span> Back to collection</a>
     <header class="detail-header">
       <p class="eyebrow">{kind} <span aria-hidden="true">/</span> {year}</p>
       <h1>{title}</h1>
